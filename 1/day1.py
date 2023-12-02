@@ -11,34 +11,47 @@ nums = {"one": 1,
         "eight": 8,
         "nine": 9
         }
-
-firstdigit = 0
-lastdigit = 0
-
-total = 0
-total_append = 0
-matches = []
-
 # Attempting sliding window solution: 
 # Sliding window deemed too hard since it's late at night, regex it is: 
-# learned a bunch about regex too
+# learned a bunch about regex too. 
 
-pattern = re.compile(r'(one|two|three|four|five|six|seven|eight|nine|[1-9])')
+# AND I LEARNED A VALUABLE LESSON ABOUT AOC: 
+# I looked at the input immediatelly after reading part 1, saw the numbers
+# spelled out literally, and implemented a part 2 solution 
+# instead of a part 1 solution. 
+#
+# No wonder my output would not work!!!
+#  
+# Lesson: Solve for the first problem, not the second.  
+
+def get_num(str):
+    if str.isdigit():
+        return int(str)
+    return nums[str]
 
 
-with open("./input.txt", "r") as file:
-    for line in file:
 
-        
-        matches.append(pattern.search(line).group())
-        matches.append(pattern.search(line[::-1]).group())
-        firstdigit = int(matches[0]) if matches[0].isdigit() else nums.get(matches[0], 0)
-        lastdigit = int(matches[1]) if matches[1].isdigit() else nums.get(matches[1], 0)
-        total_append = (firstdigit * 10) + lastdigit 
-        # append local first and last calibration numbers to total
-        total += total_append
-        
-        print(f'matches: {matches} firstdigit: {firstdigit} seconddigit: {lastdigit} total append: {total_append} total: {total}')
-        matches = []
-file.close()
-print(total)
+def solve(regex):
+    firstdigit = 0
+    lastdigit = 0
+    total = 0
+    matches = []
+    with open("./input.txt", "r") as file:
+        for line in file:
+            matches = re.findall(regex, line)
+            firstdigit = get_num(matches[0])
+            lastdigit = get_num(matches[-1])
+            total += (firstdigit * 10) + lastdigit 
+            
+    file.close()
+    return total
+
+def main():
+    compiled_regex_p1 = re.compile(r'([1-9])')
+    compiled_regex_p2 = re.compile(r'(?=(one|two|three|four|five|six|seven|eight|nine|[1-9]))')
+    
+    print(f'Total Part 1: {solve(compiled_regex_p1)}')
+    print(f'Total Part 2: {solve(compiled_regex_p2)}')
+
+if __name__ == "__main__":
+    main()
